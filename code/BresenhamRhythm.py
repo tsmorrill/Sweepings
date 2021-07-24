@@ -1,10 +1,8 @@
 def Bresenham(k,n):
     """Compute Euclidean rhythm of k pulses and length n."""
     list = []
-    cumDiff = n - k
-    pulse = True
-    if k == 0:
-        pulse = False
+    cumDiff = -k
+    pulse = False
     for x in range(n):
         if cumDiff < 0:
             pulse = True
