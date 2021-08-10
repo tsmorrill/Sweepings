@@ -23,11 +23,11 @@ for i in range(iter):
     temp_list.append(height[-1])
     height = temp_list
 
+# normalize
 m = min(height)
 M = max(height)
 width = M - m
 
-# normalize
 for index, value in enumerate(height):
     height[index] = (value - m)/width
 
