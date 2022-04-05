@@ -7,4 +7,4 @@ def euclid(t, k, n):
 
 if __name__ == "__main__":
     for t in range(16):
-        print(euclid(t, 3, 8))
+        print(t, euclid(t, 3, 8))
