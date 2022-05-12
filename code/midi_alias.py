@@ -1,9 +1,21 @@
-dict = {0:  "C", 1: "Db",  2:  "D",  3: "Eb",
-        4:  "E", 5:  "F",  6: "Gb",  7:  "G",
-        8: "Ab", 9:  "A", 10: "Bb", 11:  "B"}
+dict = {0:  ("C", None),
+        1:  ("Cs", "Db"),
+        2:  ("D", None),
+        3:  ("Ds", "Eb"),
+        4:  ("E", None),
+        5:  ("F", None),
+        6:  ("Fs", "Gb"),
+        7:  ("G", None),
+        8:  ("Gs", "Ab"),
+        9:  ("A", None),
+        10: ("As", "Bb"),
+        11: ("B", None)}
 
 if __name__ == "__main__":
     for n in range(12, 128):
-        letter = dict[n % 12]
+        letter1, letter2 = dict[n % 12]
         number = str(n//12 - 1)
-        print(f"{letter}{number} = {n}")
+        if letter2:
+            print(f"{letter1}{number} = {letter2}{number} = {n}")
+        else:
+            print(f"{letter1}{number} = {n}")
