@@ -2,7 +2,6 @@ def plain_hunt(list):
     """Calculate all plain hunt method ringing permutations of list."""
     length = len(list)
     list_copy = list.copy()
-    print(list_copy)
     seqs = [list_copy]
     pairs_count = (length//2)
     for t in range(2*length - 1):
@@ -16,7 +15,7 @@ def plain_hunt(list):
 
 
 if __name__ == "__main__":
-    seq = list(range(1, 10))
+    seq = list(range(6))
     seqs = plain_hunt(seq)
     for seq in seqs:
         print(seq)
