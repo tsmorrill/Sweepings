@@ -15,7 +15,7 @@ def plain_hunt(list):
 
 
 if __name__ == "__main__":
-    seq = list(range(6))
+    seq = list(range(1, 20))
     seqs = plain_hunt(seq)
-    for seq in seqs:
-        print(seq)
+    for seq in seqs[:10]:
+        print(seq[:10])
