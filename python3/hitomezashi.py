@@ -3,9 +3,9 @@ import random
 
 def hitomezashi(twos, ones):
     box_draw = ["┏", "┗", "┓", "┛",                         # default glyph
-                "┓", "┛", "┏", "┗",                         # mirror vertical
-                "┗", "┏", "┛", "┓",                         # mirror horizontal
-                "┛", "┓", "┗", "┏"]                         # mirror v & h
+                "┓", "┛", "┏", "┗",                         # mirror horizontal
+                "┗", "┏", "┛", "┓",                         # mirror vertical
+                "┛", "┓", "┗", "┏"]                         # mirror h & v
     for row in range(len(twos)):
         pointers = []
         for col in range(len(ones)):
