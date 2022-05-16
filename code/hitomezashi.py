@@ -1,14 +1,15 @@
 import random
 
 
-def hitomezashi(n):
+def hitomezashi(twos, ones):
+    if len(twos) != len(ones):
+        raise Exception("lists must be the same length")
+    n = len(twos)
     box_draw = ["┏", "┗", "┓", "┛",                         # default glyph
                 "┓", "┛", "┏", "┗",                         # mirror vertical
                 "┗", "┏", "┛", "┓",                         # mirror horizontal
                 "┛", "┓", "┗", "┏"]                         # mirror v & h
-    twos = random.choices([0, 1], k=n)
-    ones = random.choices([0, 1], k=n)
-    for row in range(n):
+    for row in range(len(twos)):
         pointers = []
         for col in range(n):
             pointer = 8*(row % 2) + 4*(col % 2) + 2*twos[row] + 1*ones[col]
@@ -18,4 +19,6 @@ def hitomezashi(n):
 
 
 if __name__ == "__main__":
-    hitomezashi(50)
+    twos = random.choices([0, 1], k=50)
+    ones = random.choices([0, 1], k=50)
+    hitomezashi(twos, ones)
