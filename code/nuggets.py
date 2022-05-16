@@ -9,7 +9,7 @@ def is_purchasable(a, b, n):
     if n == 0:
         return True
     d = math.gcd(a, b)
-    if not n/d:
+    if n % d != 0:
         return False
     a, b = max(a, b)//d, min(a, b)//d
     inv = pow(b, -1, a)
