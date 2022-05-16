@@ -2,10 +2,8 @@ import math
 
 
 def is_purchasable(a, b, n):
-    if a <= 0:
-        raise ValueError("a must be positive")
-    if b <= 0:
-        raise ValueError("b must be positive")
+    if a <= 0 or b <= 0:
+        raise ValueError("a and b must be positive")
     if n == 0:
         return True
     d = math.gcd(a, b)
@@ -18,6 +16,6 @@ def is_purchasable(a, b, n):
 
 
 if __name__ == "__main__":
-    for i in range(24):
+    for i in range(24):              # largest unpurchasable n is (a*b - a - b)
         string = "" if is_purchasable(5, 7, i) else "not "
         print(f"{i} is {string}purchasable with five- and seven-packs")
