@@ -15,8 +15,10 @@ def hitomezashi(row_choices, col_choices):
 
 
 if __name__ == "__main__":
-    row_choices = [n*n % 3 for n in range(20)]
-    col_choices = [n*n % 3 for n in range(79)]
+    row_pattern = [1, 1, 1]
+    col_pattern = [1, 0, 1, 0, 0]
+    row_choices = [row_pattern[n % 3] for n in range(20)]
+    col_choices = [col_pattern[n % 5] for n in range(79)]
     hitomezashi(row_choices, col_choices)
 
     print(" ")
