@@ -1,4 +1,4 @@
-def Bresenham(k,n):
+def Bresenham(k, n):
     """Compute Euclidean rhythm of k pulses and length n."""
     list = []
     cumDiff = -k
@@ -12,5 +12,7 @@ def Bresenham(k,n):
         cumDiff -= k
     return(list)
 
-for k in range(17):
-    print(k, 16, Bresenham(k, 16))
+
+if __name__ == "__main__":
+    for k in range(17):
+        print(k, 16, Bresenham(k, 16))
