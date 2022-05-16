@@ -19,6 +19,13 @@ def hitomezashi(twos, ones):
 
 
 if __name__ == "__main__":
-    twos = random.choices([0, 1], k=50)
-    ones = random.choices([0, 1], k=50)
+    n = 40
+
+    twos = ones = [n*n % 3 for n in range(n)]
+    hitomezashi(twos, ones)
+
+    print(" ")
+
+    twos = random.choices([0, 1], k=n)
+    ones = random.choices([0, 1], k=n)
     hitomezashi(twos, ones)
