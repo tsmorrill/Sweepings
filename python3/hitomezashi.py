@@ -1,27 +1,26 @@
 import random
 
 
-def hitomezashi(twos, ones):
-    box_draw = ["┏", "┗", "┓", "┛",                         # default glyph
-                "┓", "┛", "┏", "┗",                         # mirror horizontal
-                "┗", "┏", "┛", "┓",                         # mirror vertical
-                "┛", "┓", "┗", "┏"]                         # mirror h & v
-    for row in range(len(twos)):
-        pointers = []
-        for col in range(len(ones)):
-            pointer = 8*(row % 2) + 4*(col % 2) + 2*twos[row] + 1*ones[col]
-            pointers.append(pointer)
-        string = "".join(box_draw[p] for p in pointers)
+def hitomezashi(row_choices, col_choices):
+    char_str = "┏┓┗┛"
+    for row, row_offset in enumerate(row_choices):
+        chars = []
+        for col, col_offset in enumerate(col_choices):
+            i = (row + col_offset) % 2
+            j = (col + row_offset) % 2
+            index = 2*i + j
+            chars.append(char_str[index])
+        string = "".join(chars)
         print(string)
 
 
 if __name__ == "__main__":
-    n = 30
-    twos = ones = [n*n % 3 for n in range(n)]
-    hitomezashi(twos, ones)
+    row_choices = [n*n % 3 for n in range(20)]
+    col_choices = [n*n % 3 for n in range(79)]
+    hitomezashi(row_choices, col_choices)
 
     print(" ")
 
-    twos = random.choices([0, 1], k=10)
-    ones = random.choices([0, 1], k=50)
+    twos = random.choices([0, 1], k=20)
+    ones = random.choices([0, 1], k=79)
     hitomezashi(twos, ones)
