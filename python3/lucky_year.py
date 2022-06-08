@@ -38,7 +38,7 @@ def all_years():
     for century in range(1, 70):
         for decade in range(century, 70):
             if is_lucky(century, decade):
-                pad = " " * int(century < 10)
+                pad = "0" * int(century < 10)
 
                 year = 100*century + decade
 
@@ -53,13 +53,13 @@ if __name__ == "__main__":
 
 
 """
-Probability to see  118: 1.8530e-03
-Probability to see  239: 3.9996e-04
-Probability to see  319: 1.9665e-03
-Probability to see  520: 2.0844e-03
-Probability to see  822: 2.2071e-03
-Probability to see  844: 4.4134e-04
-Probability to see  960: 6.0506e-05
+Probability to see 0118: 1.8530e-03
+Probability to see 0239: 3.9996e-04
+Probability to see 0319: 1.9665e-03
+Probability to see 0520: 2.0844e-03
+Probability to see 0822: 2.2071e-03
+Probability to see 0844: 4.4134e-04
+Probability to see 0960: 6.0506e-05
 Probability to see 1023: 2.3344e-03
 Probability to see 1224: 2.4665e-03
 Probability to see 1348: 4.8547e-04
