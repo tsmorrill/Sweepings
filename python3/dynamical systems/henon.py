@@ -13,11 +13,8 @@ def p_gen(gen):
 
 
 @p_gen
-def henon(x, y):
+def henon(x, y, a=1.4, b=0.3):
     """Return a generator for the Henon map."""
-    a = 1.4
-    b = 0.3
-
     while True:
         yield x
         x, y = 1 - a*x**2 + y, b*x

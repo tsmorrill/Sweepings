@@ -13,9 +13,8 @@ def p_gen(gen):
 
 
 @p_gen
-def logistic(x):
+def logistic(x, r=3.56995):
     """Return a generator for the logistic map."""
-    r = 3.56995
     while True:
         yield x
         x = r*x*(1-x)
