@@ -13,7 +13,7 @@ def p_gen(gen):
 
 
 @p_gen
-def b_ship(z, c=0):
+def b_ship(z=0, c=0):
     """Return a generator for the burning ship map."""
     while True:
         yield z
@@ -25,7 +25,7 @@ def b_ship(z, c=0):
 if __name__ == "__main__":
     x = random.uniform(-1, 1)
     y = random.uniform(-1, 1)
-    z = x + y*1j
-    generator = b_ship(z)
+    c = x + y*1j
+    generator = b_ship(c=c)
     for _ in range(8):
         print(generator())

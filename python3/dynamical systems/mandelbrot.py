@@ -13,7 +13,7 @@ def p_gen(gen):
 
 
 @p_gen
-def mandelbrot(z, c=0):
+def mandelbrot(z=0, c=0):
     """Return a generator for the Mandelbrot map."""
     while True:
         yield z
@@ -24,7 +24,7 @@ def mandelbrot(z, c=0):
 if __name__ == "__main__":
     x = random.uniform(-1, 1)
     y = random.uniform(-1, 1)
-    z = x + y*1j
-    generator = mandelbrot(z)
+    c = x + y*1j
+    generator = mandelbrot(c=c)
     for _ in range(8):
         print(generator())
