@@ -1,10 +1,10 @@
 import random
 
 
-def p_generator(p_gen):
+def p_gen(gen):
     """Wrap a parameterized generator in a function call."""
     def wrapper(*args, **kwargs):
-        generator = p_gen(*args, **kwargs)
+        generator = gen(*args, **kwargs)
 
         def func():
             return next(generator)
@@ -12,7 +12,7 @@ def p_generator(p_gen):
     return wrapper
 
 
-@p_generator
+@p_gen
 def tent(x, m=1.5):
     """Return a generator for the tent map."""
 
