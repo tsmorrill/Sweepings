@@ -10,8 +10,8 @@ def p_gen(gen):
 
 
 @p_gen
-def lfsa(n):
-    """Return a generator for a linear feedback shift array."""
+def lfsr(n):
+    """Return a generator for a linear feedback shift register."""
     n += int(n == 0)                                    # don't initialize on 0
     while True:
         yield n
@@ -21,6 +21,6 @@ def lfsa(n):
 
 if __name__ == "__main__":
     n = 1
-    generator = lfsa(n)
+    generator = lfsr(n)
     for _ in range(8):
         print(generator())
