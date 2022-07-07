@@ -1,6 +1,6 @@
 def valuation(n):
     if n == 0:
-        return float('inf')
+        return float("inf")
 
     valuation = 0
 
@@ -12,4 +12,4 @@ def valuation(n):
 
 if __name__ == "__main__":
     for n in range(9):
-        print(n, valuation(n), sep=' -> ')
+        print(n, valuation(n), sep=" -> ")

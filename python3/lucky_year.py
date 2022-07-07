@@ -19,7 +19,7 @@ def count_outcomes(century, decade):
 def prob(century, decade):
     outcomes = count_outcomes(century, decade)
     SIXTY_NINE_CHOOSE_FIVE = 11238513
-    return outcomes/SIXTY_NINE_CHOOSE_FIVE
+    return outcomes / SIXTY_NINE_CHOOSE_FIVE
 
 
 def two_sig_figures(t):
@@ -40,7 +40,7 @@ def all_years():
             if is_lucky(century, decade):
                 pad = "0" * int(century < 10)
 
-                year = 100*century + decade
+                year = 100 * century + decade
 
                 chance = prob(century, decade)
                 chance = numpy.format_float_scientific(chance, precision=4)

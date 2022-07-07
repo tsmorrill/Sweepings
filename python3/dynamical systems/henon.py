@@ -3,12 +3,15 @@ import random
 
 def p_gen(gen):
     """Wrap a parameterized generator in a function call."""
+
     def wrapper(*args, **kwargs):
         generator = gen(*args, **kwargs)
 
         def func():
             return next(generator)
-        return(func)
+
+        return func
+
     return wrapper
 
 
@@ -17,7 +20,7 @@ def henon(x, y, a=1.4, b=0.3):
     """Return a generator for the Henon map."""
     while True:
         yield x
-        x, y = 1 - a*x**2 + y, b*x
+        x, y = 1 - a * x**2 + y, b * x
 
 
 if __name__ == "__main__":

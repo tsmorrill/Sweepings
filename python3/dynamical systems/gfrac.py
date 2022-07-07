@@ -3,12 +3,15 @@ import random
 
 def p_gen(gen):
     """Wrap a parameterized generator in a function call."""
+
     def wrapper(*args, **kwargs):
         generator = gen(*args, **kwargs)
 
         def func():
             return next(generator)
-        return(func)
+
+        return func
+
     return wrapper
 
 
@@ -17,7 +20,7 @@ def gfrac(x):
     """Return a generator for the Gauss continued fraction map."""
     while True:
         yield x
-        x = 1/x
+        x = 1 / x
         x -= int(x)
 
 

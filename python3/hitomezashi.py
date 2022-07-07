@@ -8,7 +8,7 @@ def hitomezashi(row_choices, col_choices):
         for col, col_offset in enumerate(col_choices):
             i = (row + col_offset) % 2
             j = (col + row_offset) % 2
-            index = 2*i + j
+            index = 2 * i + j
             chars.append(char_str[index])
         string = "".join(chars)
         print(string)

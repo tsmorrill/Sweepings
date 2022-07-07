@@ -5,15 +5,15 @@ def plain_hunt(list):
     list_copy = list.copy()
     seqs = [list_copy]
     pairs_count = length // 2
-    for t in range(2*length - 1):
+    for t in range(2 * length - 1):
         t_mod_2 = t % 2
         pairs_adjust = t_mod_2 * (1 - l_mod_2)  # don't adjust if length is odd
         for n in range(pairs_count - pairs_adjust):
-            index = 2*n + t_mod_2
+            index = 2 * n + t_mod_2
             list[index], list[index + 1] = list[index + 1], list[index]
         list_copy = list.copy()
         seqs.append(list_copy)
-    return(seqs)
+    return seqs
 
 
 if __name__ == "__main__":

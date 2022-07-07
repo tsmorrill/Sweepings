@@ -1,18 +1,21 @@
 def p_gen(gen):
     """Wrap a parameterized generator in a function call."""
+
     def wrapper(*args, **kwargs):
         generator = gen(*args, **kwargs)
 
         def func():
             return next(generator)
-        return(func)
+
+        return func
+
     return wrapper
 
 
 @p_gen
 def lfsr(n):
     """Return a generator for a linear feedback shift register."""
-    n += int(n == 0)                                    # don't initialize on 0
+    n += int(n == 0)  # don't initialize on 0
     while True:
         yield n
         bit = (n ^ (n >> 1) ^ (n >> 3) ^ (n >> 12)) & 1

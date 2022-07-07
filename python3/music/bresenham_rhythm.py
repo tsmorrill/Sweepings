@@ -10,7 +10,7 @@ def Bresenham(k, n):
         else:
             list.append(0)
         cumDiff -= k
-    return(list)
+    return list
 
 
 if __name__ == "__main__":
