@@ -12,4 +12,5 @@ def euclid(pulses, length):
 
 
 if __name__ == "__main__":
-    print(euclid(3, 7))
+    symbols = ["X" if bool else "." for bool in euclid(12, 19)]
+    print("".join(symbols))
