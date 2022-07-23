@@ -66,8 +66,8 @@ def mandelbrot(
         for j in range(height):
             c = complex(affine_x(i), affine_y(j))
             pixel[i, j] = hsv(c=c, rounds=rounds, escape=escape)
-        if not i % width >> 4:
-            print(f"{round(i / width * 100)}% done")
+        if not i % round(width / 100):
+            print(f"{round(i / width * 100, 2)}% done")
     return image
 
 
