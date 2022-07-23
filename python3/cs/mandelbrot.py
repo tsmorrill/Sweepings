@@ -48,36 +48,34 @@ def mandelbrot(
     escape: float,
 ):
     x_0, x_1, y_0, y_1 = window(center, radius, width, height)
-    run = x_1 - x_0
-    rise = y_1 - y_0
-    height = round(rise / run * width)
     image = Image.new("HSV", (width, height))
     pixel = image.load()
 
+    delta_x = (x_1 - x_0) / width
+    delta_y = (y_1 - y_0) / height
+
     def affine_x(i: int) -> float:
-        delta = (x_1 - x_0) / width
-        return x_0 + delta / 2 + delta * i
+        return x_0 + delta_x / 2 + delta_x * i
 
     def affine_y(j: int) -> float:
-        delta = (y_1 - y_0) / height
-        return y_1 - delta / 2 - delta * j
+        return y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
 
-    for i in range(width):
-        for j in range(height):
+    for j in range(height):
+        for i in range(width):
             c = complex(affine_x(i), affine_y(j))
             pixel[i, j] = hsv(c=c, rounds=rounds, escape=escape)
-        if not i % round(width / 100):
-            print(f"{round(i / width * 100, 2)}% done")
+        if not j % round(height / 20):
+            print(f"{round(j / height * 100)}% of rows drawn")
     return image
 
 
 if __name__ == "__main__":
     image = mandelbrot(
-        center=0,
-        radius=2,
-        width=800,
-        height=600,
-        rounds=48,
+        center=-0.0134 + 0.655j,
+        radius=5E-3,
+        width=3200,
+        height=1800,
+        rounds=256,
         escape=100,
     )
     image.show()
