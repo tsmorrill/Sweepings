@@ -2,10 +2,6 @@ from math import sqrt
 from PIL import Image
 
 
-def tuple_8bit(floats: tuple[float]) -> tuple[int]:
-    return tuple(round(255 * float) for float in floats)
-
-
 def window(center: complex, radius: float, width: int, height: int) -> tuple:
     diagonal = sqrt(width**2 + height**2)
     delta_x = radius * width / diagonal
@@ -33,46 +29,41 @@ def fractal(
     pixel = image.load()
     denominator = rounds // color_wrap
 
-    def hsv(c: complex) -> float:
+    def orbit(c: complex) -> float:
         inverse = 1 / denominator
 
-        def hue(score: int) -> float:
-            frac = score * inverse
-            return (frac) / 4 + 0b101 / 0b1000
-
-        def saturation(score: int) -> float:
-            frac = score * inverse
-            return (3 - frac) / 3
-
-        def value(score: int) -> float:
-            return int(score < rounds)
+        def hsv_8bit(score):
+            frac = (score % denominator) * inverse
+            hue = frac / 4 + 9 / 16
+            hue = 255 * hue + 0.5
+            saturation = (3 - frac) / 3
+            saturation = 255 * saturation + 0.5
+            value = 255 * (score < rounds)
+            return int(hue), int(saturation), int(value)
 
         z = 0j
         score = 0
         while (
-            score < rounds
-            and -escape < z.real < escape
+            -escape < z.real < escape
             and -escape < z.imag < escape
+            and score < rounds
         ):
             z = z**2 + c
             score += 1
-        score %= denominator
-        floats = hue(score), saturation(score), value(score)
-        return tuple_8bit(floats)
+        return hsv_8bit(score)
 
     delta_x = (x_1 - x_0) / width
     delta_y = (y_1 - y_0) / height
 
-    def sample_x(i: int) -> float:
-        return x_0 + delta_x / 2 + delta_x * i
-
-    def sample_y(j: int) -> float:
-        return y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
+    def sample(i: int, j: int) -> float:
+        x = x_0 + delta_x / 2 + delta_x * i
+        y = y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
+        return complex(x, y)
 
     for j in range(height):
         for i in range(width):
-            c = complex(sample_x(i), sample_y(j))
-            pixel[i, j] = hsv(c)
+            c = sample(i, j)
+            pixel[i, j] = orbit(c)
         if not j % round(height / 20):
             print(f"{round(j / height * 100)}% of rows drawn")
     return image
@@ -86,6 +77,6 @@ if __name__ == "__main__":
         height=1400,
         rounds=2**9,
         escape=34,
-        color_wrap=8,
+        color_wrap=4,
     )
     image.show()
