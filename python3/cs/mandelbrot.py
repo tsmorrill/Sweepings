@@ -25,11 +25,9 @@ def fractal(
     color_wrap: int = 1,
 ):
     x_0, x_1, y_0, y_1 = window(center, radius, width, height)
-    image = Image.new("HSV", (width, height))
-    pixel = image.load()
     denominator = rounds // color_wrap
 
-    def orbit(c: complex) -> float:
+    def orbit_color(c: complex) -> float:
         inverse = 1 / denominator
 
         def hsv_8bit(score):
@@ -60,10 +58,12 @@ def fractal(
         y = y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
         return complex(x, y)
 
+    image = Image.new("HSV", (width, height))
+    pixel = image.load()
     for j in range(height):
         for i in range(width):
             c = sample(i, j)
-            pixel[i, j] = orbit(c)
+            pixel[i, j] = orbit_color(c)
         if not j % round(height / 20):
             print(f"{round(j / height * 100)}% of rows drawn")
     return image
