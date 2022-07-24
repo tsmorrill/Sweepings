@@ -26,22 +26,15 @@ def fractal(
     height: int,
     rounds: int,
     escape: float,
+    color_wrap: int = 1,
 ):
     x_0, x_1, y_0, y_1 = window(center, radius, width, height)
     image = Image.new("HSV", (width, height))
     pixel = image.load()
-
-    delta_x = (x_1 - x_0) / width
-    delta_y = (y_1 - y_0) / height
-
-    def sample_x(i: int) -> float:
-        return x_0 + delta_x / 2 + delta_x * i
-
-    def sample_y(j: int) -> float:
-        return y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
+    denominator = rounds // color_wrap
 
     def hsv(c: complex) -> float:
-        inverse = 1 / rounds
+        inverse = 1 / denominator
 
         def hue(score: int) -> float:
             frac = score * inverse
@@ -53,17 +46,28 @@ def fractal(
 
         def value(score: int) -> float:
             return int(score < rounds)
+
         z = 0j
         score = 0
         while (
-            -escape < z.real < escape
+            score < rounds
+            and -escape < z.real < escape
             and -escape < z.imag < escape
-            and score < rounds
         ):
             z = z**2 + c
             score += 1
+        score %= denominator
         floats = hue(score), saturation(score), value(score)
         return tuple_8bit(floats)
+
+    delta_x = (x_1 - x_0) / width
+    delta_y = (y_1 - y_0) / height
+
+    def sample_x(i: int) -> float:
+        return x_0 + delta_x / 2 + delta_x * i
+
+    def sample_y(j: int) -> float:
+        return y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
 
     for j in range(height):
         for i in range(width):
@@ -82,5 +86,6 @@ if __name__ == "__main__":
         height=1400,
         rounds=2**9,
         escape=34,
+        color_wrap=8,
     )
     image.show()
