@@ -24,7 +24,16 @@ def fractal(
     escape: float,
     color_wrap: int = 1,
 ):
+
     x_0, x_1, y_0, y_1 = window(center, radius, width, height)
+    delta_x = (x_1 - x_0) / width
+    delta_y = (y_1 - y_0) / height
+
+    def sample(i: int, j: int) -> float:
+        x = x_0 + delta_x / 2 + delta_x * i
+        y = y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
+        return complex(x, y)
+
     denominator = rounds // color_wrap
 
     def orbit_color(c: complex) -> float:
@@ -49,14 +58,6 @@ def fractal(
             z = z**2 + c
             score += 1
         return hsv_8bit(score)
-
-    delta_x = (x_1 - x_0) / width
-    delta_y = (y_1 - y_0) / height
-
-    def sample(i: int, j: int) -> float:
-        x = x_0 + delta_x / 2 + delta_x * i
-        y = y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
-        return complex(x, y)
 
     image = Image.new("HSV", (width, height))
     pixel = image.load()
