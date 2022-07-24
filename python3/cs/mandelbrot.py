@@ -40,10 +40,9 @@ def fractal(
         inverse = 1 / denominator
 
         def hsv_8bit(score):
-            frac = (score % denominator) * inverse
-            hue = frac / 6 + 2/3
+            hue = (score % denominator) * inverse / 6 + 2/3
             hue = 255 * hue + 0.5
-            saturation = (3 - frac) / 3
+            saturation = (3 - score * inverse) / 3
             saturation = 255 * saturation + 0.5
             value = 255 * (score < rounds)
             return int(hue), int(saturation), int(value)
