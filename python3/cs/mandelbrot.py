@@ -43,7 +43,7 @@ def fractal(
 
     def color(row: int, col: int) -> tuple:
         if not col and not row % check_in:
-            print(f"{row} of {height} rows drawn.")
+            print(f"{row} rows drawn.")
         z = 0j
         score = -1
         c = sample(row, col)
