@@ -39,9 +39,10 @@ def fractal(
     dither = noise(iter=dither_size)
     wrap = 2**dither_size
     escape = escape**2
+    check_in = height // 8
 
     def color(row: int, col: int) -> tuple:
-        if not col and not (row - 1) % (height // 8):
+        if not col and not row % check_in:
             print(f"{row} of {height} rows drawn.")
         z = 0j
         score = -1
@@ -49,10 +50,7 @@ def fractal(
         bounded = True
         while bounded and score < rounds:
             z = z**2 + c
-            z = z**2 + c
-            z = z**2 + c
-            z = z**2 + c
-            score += 4
+            score += 1
             bounded = z.real**2 + z.imag**2 - escape < 0
         hue = (score % denominator / denominator) / 6 + 2 / 3
         offset = dither[row % wrap, col % wrap]
