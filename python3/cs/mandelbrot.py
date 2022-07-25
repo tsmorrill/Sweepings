@@ -25,28 +25,15 @@ def fractal(
     escape: float,
     color_wrap: int = 1,
 ):
-
-    x_0, x_1, y_0, y_1 = window(center, radius, width, height)
-    delta_x = (x_1 - x_0) / width
-    delta_y = (y_1 - y_0) / height
-
-    def sample(i: int, j: int) -> float:
-        x = x_0 + delta_x / 2 + delta_x * i
-        y = y_0 - delta_y / 2 - delta_y * j  # compensate for orientation
-        return complex(x, y)
-
-    denominator = rounds // color_wrap
-
     def color(row: int, col: int) -> float:
-        inverse = 1 / denominator
+        x_0, x_1, y_0, y_1 = window(center, radius, width, height)
+        delta_x = (x_1 - x_0) / width
+        delta_y = (y_1 - y_0) / height
 
-        def hsv_8bit(score):
-            hue = (score % denominator) * inverse / 6 + 2/3
-            hue = 255 * hue + 0.5
-            saturation = (6 - score * inverse) / 6
-            saturation = 255 * saturation + 0.5
-            value = (255) * (score < rounds)
-            return int(hue), int(saturation), value
+        def sample(row: int, col: int) -> float:
+            x = x_0 + delta_x / 2 + delta_x * col
+            y = y_1 - delta_y / 2 - delta_y * row  # compensate for orientation
+            return complex(x, y)
 
         z = 0j
         score = 0
@@ -57,6 +44,17 @@ def fractal(
         ):
             z = z**2 + c
             score += 1
+
+        denominator = rounds // color_wrap
+        inverse = 1 / denominator
+
+        def hsv_8bit(score):
+            hue = (score % denominator) * inverse / 6 + 2/3
+            hue = 255 * hue + 0.5
+            saturation = (6 - score * inverse) / 6
+            saturation = 255 * saturation + 0.5
+            value = (255) * (score < rounds)
+            return int(hue), int(saturation), value
         return hsv_8bit(score)
 
     hsv_array = np.array(
@@ -69,12 +67,12 @@ def fractal(
 
 if __name__ == "__main__":
     image = fractal(
-        center=-0.01558 + 0.6601j,
+        center=-0.01558 + 0.66008j,
         radius=4E-5,
-        width=600,
+        width=800,
         height=600,
-        rounds=2**9,
+        rounds=2**8,
         escape=34,
-        color_wrap=4,
+        color_wrap=8,
     )
     image.show()

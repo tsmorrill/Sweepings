@@ -32,7 +32,7 @@ def fractal(
 
     def sample(i: int, j: int) -> float:
         x = x_0 + delta_x / 2 + delta_x * i
-        y = y_0 - delta_y / 2 - delta_y * j  # compensate for orientation
+        y = y_1 - delta_y / 2 - delta_y * j  # compensate for orientation
         return complex(x, y)
 
     denominator = rounds // color_wrap
@@ -61,7 +61,7 @@ def fractal(
         return hsv_8bit(score)
 
     hsv_array = np.array(
-        [[color(i, j) for i in range(width)] for j in range(height)],
+        [[color(row, col) for row in range(height)] for col in range(width)],
         dtype="uint8"
     )
     image = Image.fromarray(hsv_array, mode="HSV")
