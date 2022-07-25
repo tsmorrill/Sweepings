@@ -50,13 +50,13 @@ def fractal(
         bounded = True
         while bounded and score < rounds:
             z = z.conjugate()
-            z = z**2 + c
+            z = z**3 + c
             score += 1
             bounded = z.real**2 + z.imag**2 - escape < 0
         hue = score % denominator / denominator
         offset = dither[row % wrap, col % wrap]
         hue = 255 * hue + offset
-        saturation = 1 - score / rounds
+        saturation = 1 - (score / rounds)**2
         saturation = 255 * saturation + offset
         value = 255 * (score < rounds)
         hsv_8bit = (int(hue), int(saturation), value)
@@ -82,12 +82,12 @@ def noise(iter: int):
 
 if __name__ == "__main__":
     image = fractal(
-        center=-0.015583 + 0.660088j,
-        radius=4E-5,
+        center=-0.6 - 0.448j,
+        radius=1E-3,
         width=2800,
         height=2800,
         rounds=2**9,
-        escape=34,
-        color_wrap=8,
+        escape=100,
+        color_wrap=2,
     )
     image.show()
