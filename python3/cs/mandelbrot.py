@@ -46,12 +46,11 @@ def fractal(
             score += 1
 
         denominator = rounds // color_wrap
-        inverse = 1 / denominator
 
         def hsv_8bit(score):
-            hue = (score % denominator) * inverse / 6 + 2/3
+            hue = (score % denominator) / denominator / 6 + 2/3
             hue = 255 * hue + 0.5
-            saturation = (6 - score * inverse) / 6
+            saturation = (6 - score / rounds) / 6
             saturation = 255 * saturation + 0.5
             value = (255) * (score < rounds)
             return int(hue), int(saturation), value
@@ -67,12 +66,12 @@ def fractal(
 
 if __name__ == "__main__":
     image = fractal(
-        center=-0.01558 + 0.66008j,
+        center=-0.015583 + 0.660088j,
         radius=4E-5,
-        width=800,
-        height=600,
-        rounds=2**8,
+        width=2000,
+        height=2000,
+        rounds=2**9,
         escape=34,
-        color_wrap=8,
+        color_wrap=10,
     )
     image.show()
