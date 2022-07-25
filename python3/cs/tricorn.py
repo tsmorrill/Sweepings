@@ -32,7 +32,7 @@ def fractal(
 
     def sample(i: int, j: int) -> float:
         x = x_0 + delta_x / 2 + delta_x * i
-        y = y_0 + delta_y / 2 + delta_y * j  # upside-down; intentional
+        y = y_0 - delta_y / 2 - delta_y * j  # compensate for orientation
         return complex(x, y)
 
     denominator = rounds // color_wrap
@@ -41,12 +41,12 @@ def fractal(
         inverse = 1 / denominator
 
         def hsv_8bit(score):
-            hue = (score % denominator) * inverse / 6
+            hue = (score % denominator) * inverse / 6 + 2/3
             hue = 255 * hue + 0.5
-            saturation = (4 - score * inverse) / 4
+            saturation = (6 - score * inverse) / 6
             saturation = 255 * saturation + 0.5
-            value = (255 - 8) * (score < rounds)
-            return int(hue), int(saturation), int(value)
+            value = (255) * (score < rounds)
+            return int(hue), int(saturation), value
 
         z = 0j
         score = 0
@@ -55,7 +55,7 @@ def fractal(
             z.real**2 + z.imag**2 < escape**2
             and score < rounds
         ):
-            z = complex(abs(z.real), abs(z.imag))
+            z = z.conjugate()
             z = z**2 + c
             score += 1
         return hsv_8bit(score)
@@ -70,12 +70,12 @@ def fractal(
 
 if __name__ == "__main__":
     image = fractal(
-        center=-1.75 - 0.05j,
-        radius=0.1,
-        width=800,
-        height=800,
+        center=-0.01558 + 0.6601j,
+        radius=4E-5,
+        width=1400,
+        height=1400,
         rounds=2**9,
-        escape=16,
-        color_wrap=16,
+        escape=34,
+        color_wrap=4,
     )
     image.show()
