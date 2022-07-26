@@ -52,10 +52,9 @@ def fractal(
             z = z**2 + c
             score += 1
             bounded = z.real**2 + z.imag**2 - escape < 0
-        value = (score % denominator / denominator)
+        value = score % denominator * 255 / denominator
         offset = dither[row % wrap, col % wrap]
-        hsv_8bit = int(255 * value + offset)
-        return hsv_8bit
+        return int(value + offset)
 
     pix_array = np.array(
         [[color(row, col) for col in range(width)] for row in range(height)],
@@ -79,10 +78,10 @@ if __name__ == "__main__":
     image = fractal(
         center=-0.015583 + 0.660088j,
         radius=4E-5,
-        width=1000,
-        height=1000,
+        width=2**11,
+        height=2**11,
         rounds=2**9,
         escape=34,
-        color_wrap=8,
+        color_wrap=32,
     )
     image.show()
