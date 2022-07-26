@@ -76,15 +76,15 @@ def noise(iter: int):
             [[2 * i * noise, 2 * i * noise + 2],
              [2 * i * noise + 3, 2 * i * noise + 1]]
         )
-    return noise / 2**(2 * iter + 1)
+    return noise / 2**(2 * iter)
 
 
 if __name__ == "__main__":
     image = fractal(
         center=-0.015583 + 0.660088j,
         radius=4E-5,
-        width=2800,
-        height=2800,
+        width=1000,
+        height=1000,
         rounds=2**9,
         escape=34,
         color_wrap=8,

@@ -77,7 +77,7 @@ def noise(iter: int):
             [[2 * i * noise, 2 * i * noise + 2],
              [2 * i * noise + 3, 2 * i * noise + 1]]
         )
-    return noise / 2**(2 * iter + 1)
+    return noise / 2**(2 * iter)
 
 
 if __name__ == "__main__":
