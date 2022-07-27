@@ -2,16 +2,19 @@ import numpy as np
 
 
 def noise(iter: int):
-    noise = np.array([[1]])
-    for i in range(iter):
-        noise = np.block(
-            [[2 * i * noise, 2 * i * noise + 2],
-             [2 * i * noise + 3, 2 * i * noise + 1]]
-        )
-    denominator = 2**iter**2
-    return noise/denominator
+    if iter == 0:
+        noise = np.array([[0]])
+    else:
+        noise = np.array([[0, 2], [3, 1]])
+        for i in range(1, iter):
+            noise = np.block(
+                [[4 * noise, 4 * noise + 2],
+                 [4 * noise + 3, 4 * noise + 1]]
+            )
+        noise = noise / 2**(2 * iter)
+    return noise
 
 
 if __name__ == "__main__":
-    noise = noise(2)
+    noise = noise(3)
     print(noise)
