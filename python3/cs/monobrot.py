@@ -1,4 +1,4 @@
-from math import sqrt
+from math import log, sqrt
 import numpy as np
 from PIL import Image
 
@@ -24,7 +24,7 @@ def fractal(
     rounds: int,
     escape: float,
     color_wrap: int = 1,
-    dither_size: int = 2,
+    power: int = 2,
 ):
     x_0, x_1, y_0, y_1 = window(center, radius, width, height)
     delta_x = (x_1 - x_0) / width
@@ -35,11 +35,8 @@ def fractal(
         y = y_1 - delta_y / 2 - delta_y * row  # compensate for orientation
         return complex(x, y)
 
-    denominator = rounds // color_wrap
-    dither = noise(iter=dither_size)
-    wrap = 2**dither_size
-    escape = escape**2
-    check_in = height // 8
+    escape_squared = escape**2
+    check_in = height >> 3
 
     def color(row: int, col: int) -> tuple:
         if not col and not row % check_in:
@@ -49,12 +46,19 @@ def fractal(
         c = sample(row, col)
         bounded = True
         while bounded and score < rounds:
-            z = z**2 + c
+            z = z**power + c
             score += 1
-            bounded = z.real**2 + z.imag**2 - escape < 0
-        value = score % denominator * 255 / denominator
-        offset = dither[row % wrap, col % wrap]
-        return int(value + offset)
+            bounded = z.real**2 + z.imag**2 - escape_squared < 0
+        if bounded:
+            value = 1
+        else:
+            value = (score + offset(z)) / (rounds + 1) * color_wrap
+        return int(255 * value)
+
+    def offset(z: complex):
+        # https://linas.org/art-gallery/escape/smooth.html
+        frac = 1 - log(log(abs(z)), power)
+        return max(0, min(frac, 1))
 
     pix_array = np.array(
         [[color(row, col) for col in range(width)] for row in range(height)],
@@ -64,24 +68,14 @@ def fractal(
     return image
 
 
-def noise(iter: int):
-    noise = np.array([[1]])
-    for i in range(iter):
-        noise = np.block(
-            [[2 * i * noise, 2 * i * noise + 2],
-             [2 * i * noise + 3, 2 * i * noise + 1]]
-        )
-    return noise / 2**(2 * iter)
-
-
 if __name__ == "__main__":
     image = fractal(
-        center=-0.015583 + 0.660088j,
-        radius=4E-5,
-        width=2**11,
-        height=2**11,
-        rounds=2**9,
-        escape=34,
-        color_wrap=32,
+        center=-0.7434875 + 0.1313j,
+        radius=8e-5,
+        width=2000,
+        height=2000,
+        rounds=2**10,
+        escape=2**10,
+        color_wrap=48,
     )
     image.show()
