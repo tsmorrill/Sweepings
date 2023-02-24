@@ -1,36 +1,50 @@
+from datetime import datetime
 from midiutil import MIDIFile
-from math import copysign, pi, sin
+from numpy import lcm
 
-def sign(x):
-    return copysign(1, x)
+def main(bpm, duration):
+    file = earmark(bpm)
+
+    LCM = lcm(bpm)
+    tick = 60 / LCM
+    periods = [LCM // n for n in bpm]
+    voices = enumerate(periods)
+    duration *= LCM
+    
+    for t in range(duration):
+        for i, period in voices:
+            if t % period == 0:
+                file.addNote(track=i,
+                             channel=0,
+                             pitch=60,
+                             time=t*tick,
+                             duration=tick,
+                             volume=127)
+
+    write(file)
 
 
-QUANTUM = 2 * pi / 128
-TICK = 0.1
-LENGTH = 1E5
+def earmark(bpm):
+    file = MIDIFile()
 
-periods = [30]
-voice_count = len(periods)
+    for i, val in enumerate(bpm):
+        file.addTrackName(track=i,
+                          time=0.0,
+                          trackName=str(val))
+    
+    return file
 
-def func(x):
-    return sin(x)
 
+def write(file):
+    dt = datetime.now()
+    filename = dt.strftime("%Y-%m-%d_%H%M%S")
+    filename = f"{filename}.mid"
+    with open(filename, "wb") as output:
+        file.writeFile(output)
+        print(f"Wrote to file {filename}.")
 
-vals = [func(0) for _ in range(voice_count)]
-signs = [0 for _ in range(voice_count)]
-
-output_file = MIDIFile()
-
-for i in range(voice_count):
-    output_file.addTrackName(i, time=0, track_name=str(periods[i]))
-
-for t in range(LENGTH):
-    old_vals = vals
-    old signs = signs
-    t *= QUANTUM
-    vals = func(t)
-    signs = [sign(vals[i] - old_vals[i]) for i in range(voice_count)]
-    trigs = [signs[i] * old_signs[i] == -1 for i in range (voice_coint)]
-    for i, trig in enumerate(trigs):
-        if trig is True:
-            
+        
+if __name__ == "__main__":
+    bpm = [64]
+    duration = 120
+    main(bpm, duration)
