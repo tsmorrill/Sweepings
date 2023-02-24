@@ -12,7 +12,7 @@ def main(bpm, duration):
     file = earmark(bpm)
 
     for t in range(duration * period_max):
-        triggers = [t % period for period in periods]
+        triggers = [t % period == 0 for period in periods]
         if triggers != rest:
             for i in voices:
                 if triggers[i]:
@@ -29,21 +29,21 @@ def main(bpm, duration):
 
 
 def earmark(bpm):
-    file = MIDIFile()
-    for i, bpm in enumerate(bpm):
-        file.addTrackName(track=i, time=0.0, trackName=f"{bpm} bpm")
+    file = MIDIFile(numTracks=len(bpm))
+    for i, val in enumerate(bpm):
+        file.addTrackName(track=i, time=0.0, trackName=f"{val} bpm")
     return file
 
 
 def write(file, bpm, duration):
     filename = ", ".join(str(n) for n in bpm)
-    filename += f"; {duration} s.mid"
+    filename = f"{filename}; {duration} s.mid"
     with open(filename, "wb") as output:
         file.writeFile(output)
         print(f"Wrote to file {filename}.")
 
 
 if __name__ == "__main__":
-    bpm = [64]
+    bpm = [60, 64]
     duration = 120
     main(bpm, duration)
