@@ -2,48 +2,49 @@ from math import lcm
 from midiutil import MIDIFile
 
 
-def main(bpm, duration):
-    voices = range(len(bpm))
-    period_max = lcm(*bpm)
-    tick = 60 / period_max
-    periods = [period_max // n for n in bpm]
+def main(divisors):
+    voices = list(enumerate(divisors))
     rest = [False for i in voices]
+    duration = lcm(*divisors)
+    
+    file = earmark(divisors)
 
-    file = earmark(bpm)
-
-    for t in range(duration * period_max):
-        triggers = [t % period == 0 for period in periods]
+    for t in range(duration):
+        triggers = [t % d == 0 for d in divisors]
         if triggers != rest:
-            for i in voices:
+            for i, d in voices:
                 if triggers[i]:
                     file.addNote(
                         track=i,
                         channel=0,
-                        pitch=60,
-                        time=t * tick,
-                        duration=tick,
+                        pitch=60 + i,
+                        time=t,
+                        duration=1,
                         volume=127,
                     )
 
-    write(file, bpm, duration)
+    write(file, divisors)
 
 
-def earmark(bpm):
-    file = MIDIFile(numTracks=len(bpm))
-    for i, val in enumerate(bpm):
-        file.addTrackName(track=i, time=0.0, trackName=f"{val} bpm")
+def earmark(divisors):
+    file = MIDIFile(numTracks=len(divisors),
+                    ticks_per_quarternote=960,
+                    eventtime_is_ticks=True)
+    for i, d in enumerate(divisors):
+        file.addTrackName(track=i, time=0, trackName=f"/{d}")
     return file
 
 
-def write(file, bpm, duration):
-    filename = ", ".join(str(n) for n in bpm)
-    filename = f"{filename}; {duration} s.mid"
+def write(file, divisors):
+    filename = ", ".join(str(d) for d in divisors)
+    filename = ".".join([filename, "mid"])
     with open(filename, "wb") as output:
         file.writeFile(output)
         print(f"Wrote to file {filename}.")
 
 
 if __name__ == "__main__":
-    bpm = [60, 64]
-    duration = 120
-    main(bpm, duration)
+    divisors = [8, 9, 10, 11, 12, 13, 14, 15, 16]
+    master_divisor = 120
+    divisors = [master_divisor * d for d in divisors]
+    main(divisors)
