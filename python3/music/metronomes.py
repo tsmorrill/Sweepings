@@ -3,25 +3,18 @@ from midiutil import MIDIFile
 
 
 def main(divisors):
-    voices = list(enumerate(divisors))
-    rest = [False for i in voices]
     duration = lcm(*divisors)
-    
     file = earmark(divisors)
-
-    for t in range(duration):
-        triggers = [t % d == 0 for d in divisors]
-        if triggers != rest:
-            for i, d in voices:
-                if triggers[i]:
-                    file.addNote(
-                        track=i,
-                        channel=0,
-                        pitch=60 + i,
-                        time=t,
-                        duration=1,
-                        volume=127,
-                    )
+    for i, d in enumerate(divisors):
+        for t in range(duration // d):
+            file.addNote(
+                track=i,
+                channel=0,
+                pitch=60 + i,
+                time=t*d,
+                duration=1,
+                volume=127
+            )
 
     write(file, divisors)
 
