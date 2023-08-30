@@ -8,4 +8,11 @@ def apply(*args):
     finally:
         return output
 
-print(apply(lambda x: 1/x, lambda x: x, 2))
+
+def comp_test(*funcs):
+    if funcs == ():
+        print('bingo')
+    print(funcs)
+
+
+comp_test()
