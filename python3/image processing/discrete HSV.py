@@ -2,7 +2,10 @@ from functools import reduce
 
 TITLE = 'discrete_HSV.py'
 AUTHOR = 'The Overboard Partitioner'
-VERSION = '0.1'
+VERSION = '0.2'
+
+# v0.2
+# - implemented forwards map
 
 DESCRIPTION = (
     'An integer-based RGB <-> HSV mapping by Chernov, Alander, and Bochko.')
@@ -66,20 +69,52 @@ def prompt(msg:str, mode:str):
     return bars
 
 
-def hue(data:tuple):
-    pass
+def sector(data:tuple, m:int, M:int):
+    match data:
+        # double check the assignment syntax
+        case M, _, m:
+            i = 0
+        case _, M, m:
+            i = 1
+        case m, M, _:
+            i = 2
+        case m, _, M:
+            i = 3
+        case _, m, M:
+            i = 4
+        case M, m, _:
+            i = 5
+    return i
 
 
-def sat(data:tuple):
-    pass
+def hue(data:tuple, m:int, c:int, M:int):
+    if m == M:
+        h = None
+    else:
+        E = 65537
+        i = sector(data, m, M)
+        f = (c - m) << 16
+        f //= 16
+        f += 1
+        if i % 2 == 1:
+            f = E - f
+        h = E*i + f
+    return h
 
 
-def val(data:tuple):
-    pass
+def sat(data:tuple, m:int, M:int):
+    d = M - m
+    if d == 0:
+        s = 0
+    else:
+        s = (d << 16) - 1
+        s //= M
+    return s
 
 
 def hsv(data:tuple):
-    return hue(data), sat(data), val(data)
+    m, c, M = sorted(data)
+    return hue(data, m, c, M), sat(data, m, M), M
 
 
 def red(data:tuple):
