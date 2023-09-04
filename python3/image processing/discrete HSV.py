@@ -1,11 +1,12 @@
 from functools import reduce
+from math import ceil
 
 TITLE = 'discrete_HSV.py'
 AUTHOR = 'The Overboard Partitioner'
-VERSION = '0.2'
+VERSION = '0.3'
 
-# v0.2
-# - implemented forwards map
+# v0.3
+# - implemented reverse map. buggy
 
 DESCRIPTION = (
     'An integer-based RGB <-> HSV mapping by Chernov, Alander, and Bochko.')
@@ -14,6 +15,7 @@ DESCRIPTION = (
 # Vladimir Chernov, Jarmo Alander, Vladimir Bochko; 2015
 
 MODES = ['RGB -> HSV', 'HSV -> RGB']
+EDGE_LEN = 65537
 
 def compose(*funcs):
     if funcs == ():
@@ -91,14 +93,13 @@ def hue(data:tuple, m:int, c:int, M:int):
     if m == M:
         h = None
     else:
-        E = 65537
         i = sector(data, m, M)
         f = (c - m) << 16
         f //= 16
         f += 1
         if i % 2 == 1:
             f = E - f
-        h = E*i + f
+        h = EDGE_LEN*i + f
     return h
 
 
@@ -114,23 +115,39 @@ def sat(data:tuple, m:int, M:int):
 
 def hsv(data:tuple):
     m, c, M = sorted(data)
-    return hue(data, m, c, M), sat(data, m, M), M
+    h, s, v = hue(data, m, c, M), sat(data, m, M), M
+    return h, s, v
 
 
-def red(data:tuple):
-    pass
-
-
-def blu(data:tuple):
-    pass
-
-
-def grn(data:tuple):
-    pass
+def order(m:int, c:int, v:int, i:int):
+    if i == 0:
+        r, g, b = v, c, m
+    if i == 1:
+        r, g, b = c, v, m
+    if i == 2:
+        r, g, b = m, v, c
+    if i == 3:
+        r, g, b = m, c, v
+    if i == 4:
+        r, g, b = c, m, v
+    if i == 5:
+        r, g, b = v, m, c
+    return r, g, b
 
 
 def rgb(data:tuple):
-    return red(data), blu(data), grn(data)
+    h, s, v, = data
+    match s*v:
+        case 0:
+            r = g = b = 0
+        case prod:
+            d = (prod >> 16) + 1
+            m = v - d
+            i = ceil(h / EDGE_LEN)
+            f = h - EDGE_LEN * i
+            c = (f * d >> 16) + m
+            r, g, b = order(m, c, v, i)
+    return r, g, b
 
 
 def report(output:tuple, mode:str):
@@ -146,7 +163,7 @@ def main():
     welcome()
     mode = pick(MODES)
     msg = {'RGB -> HSV':(
-        'Enter an RBG triple separated by spaces. Values 0-255, please.\n'),
+        'Enter an RGB triple separated by spaces. Values 0-255, please.\n'),
            'HSV -> RGB':(
         'Enter an HSV triple separated by spaces.\n')}
     command = input(msg[mode])
