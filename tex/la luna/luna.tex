@@ -1,0 +1,113 @@
+\documentclass[border=5mm]{standalone}
+\usepackage{almendra}
+\usepackage{tikz}
+
+
+\usetikzlibrary{calendar,fpu}
+
+\newcommand{\calendaryear}{2025} % remember to manually enter Feb 29th moon
+
+\newcounter{year}
+\setcounter{year}{2025}
+
+\newcounter{row}
+\newcommand{\newrow}{\stepcounter{row}\setcounter{col}{0}}
+
+\newcounter{col}
+\newcommand{\stepcol}{\stepcounter{col}\arabic{\thecol}}
+
+% https://tex.stackexchange.com/questions/34785/how-to-typeset-moon-phase-symbols
+
+\tikzset{
+    moon colour/.style={
+        moon fill/.style={
+            fill=#1
+        }
+    },
+    sky colour/.style={
+        sky draw/.style={
+            draw=#1
+        },
+        sky fill/.style={
+            fill=#1
+        }
+    },
+    southern hemisphere/.style={
+        rotate=180
+    }
+}
+
+\makeatletter
+\pgfcalendardatetojulian{2010-01-15}{\c@pgf@counta} % 2010-01-15 07:11 UTC -- http://aa.usno.navy.mil/cgi-bin/aa_moonphases.pl?year=2010&ZZZ=END
+\def\synodicmonth{29.530588853}
+\newcommand{\moon}[2][]{%
+    \edef\checkfordate{\noexpand\in@{-}{#2}}%
+    \checkfordate%
+    \ifin@%
+        \pgfcalendardatetojulian{#2}{\c@pgf@countb}%
+        \pgfkeys{/pgf/fpu=true,/pgf/fpu/output format=fixed}%
+        \pgfmathsetmacro\dayssincenewmoon{\the\c@pgf@countb-\the\c@pgf@counta-(7/24+11/(24*60))}%
+        \pgfmathsetmacro\lunarage{mod(\dayssincenewmoon,\synodicmonth)}
+        \pgfkeys{/pgf/fpu=false}%%
+    \else%
+        \def\lunarage{#2}%
+    \fi%
+    \pgfmathsetmacro\leftside{ifthenelse(\lunarage<=\synodicmonth/2,cos(360*(\lunarage/\synodicmonth)),1)}%
+    \pgfmathsetmacro\rightside{ifthenelse(\lunarage<=\synodicmonth/2,-1,-cos(360*(\lunarage/\synodicmonth))}%
+    \tikz [moon colour=white,sky colour=black,#1]{
+        \draw [moon fill, sky draw] (0,0) circle [radius=1ex];
+        \draw [sky draw, sky fill] (0,1ex)
+            arc (90:-90:\rightside ex and 1ex)
+            arc (-90:90:\leftside ex and 1ex)
+            -- cycle;
+    }%
+}
+\newcommand{\newmoon}{\moon{0}}
+\newcommand{\waxingcrescent}{\moon{\synodicmonth/8}}
+\newcommand{\firstquartermoon}{\moon{2*\synodicmonth/8}}
+\newcommand{\waxinggibbous}{\moon{3*\synodicmonth/8}}
+\newcommand{\fullmoon}{\moon{4*\synodicmonth/8}}
+\newcommand{\waninggibbous}{\moon{5*\synodicmonth/8}}
+\newcommand{\thirdquartermoon}{\moon{6*\synodicmonth/8}}
+\newcommand{\waningcrescent}{\moon{7*\synodicmonth/8}}
+
+
+
+\begin{document}
+
+\begin{tabular}{r|cccc|cccc|cccc}
+	 & \, \textit{Jan} & \, \textit{Feb} & \, \textit{Mar} & \, \textit{Apr} & \, \textit{May} & \, \textit{Jun} & \, \textit{Jul} & \, \textit{Aug} & \, \textit{Sep} & \, \textit{Oct} & \, \textit{Nov} & \, \textit{Dec} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+  \newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+  \newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col}  & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col}  & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} \\
+	\newrow\therow & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col}  & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col}& \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col} & \stepcounter{col} \moon{\theyear-\thecol-\therow} & \stepcounter{col}  & \stepcounter{col} \moon{\theyear-\thecol-\therow}
+\end{tabular}
+
+\end{document}
